@@ -1,4 +1,5 @@
-# thai-chatgpt-webapp
+# Thai ChatGPT Web Application
+
 Thai ChatGPT Web Application
 This project is a web application that utilizes the Thai language model of OpenAI's GPT-3 to generate human-like responses to user input.
 
