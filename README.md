@@ -37,7 +37,8 @@ cd thai-chatgpt-web-application
 pip install -r requirements.txt
 ```
 
-4. Replace `<your_api_key>` in `app.py` with your own OpenAI API key
+4. Replace `<your_api_key>` in `app.py` with your own OpenAI API key.<br>
+You can get by signing up for an account [here](https://beta.openai.com/signup/)
 
 5. Run the app
 ```
