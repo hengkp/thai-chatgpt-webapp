@@ -4,24 +4,48 @@ import requests
 from bs4 import BeautifulSoup
 import re
 
-## Web scraping example
-url = "https://www.example.com/thai-text"
-response = requests.get(url)
-soup = BeautifulSoup(response.content, "html.parser")
-text = soup.get_text()
+# # Web scraping example
+# url = "https://www.example.com/thai-text"
+# response = requests.get(url)
+# soup = BeautifulSoup(response.content, "html.parser")
+# text = soup.get_text()
 
-## Lowercase all text
-text = text.lower()
+# List of websites to scrape
+websites = ["https://www.bbc.com/thai", "https://www.matichon.co.th/", "https://www.siamrath.co.th/"]
 
-## Remove special characters
-text = re.sub('[^ก-๙0-9]+', ' ', text)
+# Initialize an empty list to store the text data
+text_data = []
 
-## Tokenize the text
-words = word_tokenize(text, language='thai')
+# Loop through the websites
+for website in websites:
+    # Send a GET request to the website
+    response = requests.get(website)
 
-## Remove stop words
+    # Parse the HTML content of the website
+    soup = BeautifulSoup(response.content, "html.parser")
+
+    # Extract the text data from the article tags
+    articles = soup.find_all("article")
+    for article in articles:
+        text_data.append(article.text)
+
+# Lowercase all text
+text_data = text_data.lower()
+
+# Remove special characters
+text_data = re.sub('[^ก-๙0-9]+', ' ', text_data)
+
+# Tokenize the text
+words = word_tokenize(text_data, language='thai')
+
+# Remove stop words
 stop_words = set(nltk.corpus.stopwords.words('thai'))
 words = [word for word in words if word not in stop_words]
+
+# Save the text data to a file
+with open("thai_text_data.txt", "w") as file:
+    for data in text_data:
+        file.write(data)
 
 ####---------------------
 
@@ -29,11 +53,11 @@ words = [word for word in words if word not in stop_words]
 
 from transformers import GPT2Tokenizer, GPT2LMHeadModel, TrainingArguments
 
-## Load the tokenizer and model
+# Load the tokenizer and model
 tokenizer = GPT2Tokenizer.from_pretrained("gpt2-xl")
 model = GPT2LMHeadModel.from_pretrained("gpt2-xl")
 
-## Fine-tune the model on your Thai dataset
+# Fine-tune the model on your Thai dataset
 training_args = TrainingArguments(
     output_dir='./results',
     overwrite_output_dir=True,
@@ -42,6 +66,8 @@ training_args = TrainingArguments(
     save_steps=10_000,
     save_total_limit=2,
 )
+
+train_dataset = words
 
 model.train(
     train_dataset,
